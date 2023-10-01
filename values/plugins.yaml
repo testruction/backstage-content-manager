@@ -1,0 +1,201 @@
+apiVersion: integrations.backstage.io/v1alpha1
+kind: BackendPlugin
+spec:
+  plugins:
+    - name: Architecture Decision Records
+      doc: https://github.com/backstage/backstage/tree/v1.18.3/plugins/adr-backend
+      backend:
+        package: "@backstage/plugin-adr-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/adr.ts
+            destination: packages/backend/src/plugins/adr.ts
+        src:
+          indexTs:
+            import: import adr from './plugins/adr';
+            useHotMemoize: const adrEnv = useHotMemoize(module, () => createEnv('adr'));
+            apiRouter: apiRouter.use('/adr', await adr(adrEnv));
+          plugins:
+            searchTs:
+              import: import { DefaultAdrCollatorFactory } from '@backstage/plugin-adr-backend';
+              indexBuilder: |
+                // collator gathers entities from adr.
+                indexBuilder.addCollator({
+                  schedule,
+                  factory: DefaultAdrCollatorFactory.fromConfig({
+                    cache: env.cache,
+                    config: env.config,
+                    discovery: env.discovery,
+                    logger: env.logger,
+                    reader: env.reader,
+                    tokenManager: env.tokenManager,
+                  }),
+                });
+      app:
+        package: "@backstage/plugin-adr"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: import { EntityAdrContent, isAdrAvailable } from '@backstage/plugin-adr';
+                serviceEntityPage: |
+                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
+                    <EntityAdrContent />
+                  </EntityLayout.Route>
+            search:
+              searchPageTsx:
+                import: |-
+                  import { AdrSearchResultListItem } from '@backstage/plugin-adr';
+                  import { AdrDocument } from '@backstage/plugin-adr-common';
+                searchType: |-
+                  {
+                    value: 'adr',
+                    name: 'Architecture Decision Records',
+                    icon: <DocsIcon />,
+                  },
+                # searchResult: |
+                #   {({ results }) => (
+                #       <List>
+                #         {results.map(({ type, document, highlight, rank }) => {
+                #           switch (type) {
+                #             // ...
+                #             case 'adr':
+                #               return (
+                #                 <AdrSearchResultListItem
+                #                   key={document.location}
+                #                   // Not required if you're leveraging the new search results extensions available in v1.11+
+                #                   // https://backstage.io/docs/features/search/how-to-guides#2-using-an-extension-in-your-backstage-app
+                #                   result={document as AdrDocument}
+                #                 />
+                #               );
+                #             // ...
+                #           }
+                #         })}
+                #       </List>
+                #     )}
+                searchResult: >-
+                  <AdrSearchResultListItem icon={<DocsIcon />} />
+
+    - name: Announcements
+      doc: https://github.com/K-Phoen/backstage-plugin-announcements/blob/main/docs/setup.md
+      backend:
+        package: "@k-phoen/backstage-plugin-announcements-backend"
+        scripts:
+          - type: inline
+            script: |
+              import { buildAnnouncementsContext, createRouter } from '@k-phoen/backstage-plugin-announcements-backend';
+              import { Router } from 'express';
+              import { PluginEnvironment } from '../types';
+
+              export default async function createPlugin({
+                logger,
+                database,
+                permissions,
+              }: PluginEnvironment): Promise<Router> {
+                const announcementsContext = await buildAnnouncementsContext({
+                  logger: logger,
+                  database: database,
+                  permissions: permissions
+                });
+
+                return await createRouter(announcementsContext);
+              }
+            destination: packages/backend/src/plugins/announcements.ts
+        src:
+          indexTs:
+            import: import announcements from './plugins/announcements';
+            useHotMemoize: const announcementsEnv = useHotMemoize(module, () => createEnv('announcements'));
+            apiRouter: apiRouter.use('/announcements', await announcements(announcementsEnv));
+          plugins:
+            searchTs:
+              import: import { AnnouncementCollatorFactory } from '@k-phoen/backstage-plugin-announcements-backend';
+              # createPlugin: |-
+              #   export default async function createPlugin({
+              #     logger,
+              #     permissions,
+              #     discovery,
+              #     config,
+              #     tokenManager,
+              #   }: PluginEnvironment) {
+              #     // Initialize a connection to a search engine.
+              #     const searchEngine = await ElasticSearchSearchEngine.fromConfig({
+              #       logger,
+              #       config,
+              #     });
+              #     const indexBuilder = new IndexBuilder({ logger, searchEngine });
+              schedule: |
+                const tenMinutesSchedule = env.scheduler.createScheduledTaskRunner({
+                  frequency: Duration.fromObject({ minutes: 10 }),
+                  timeout: Duration.fromObject({ minutes: 15 }),
+                  // A 3 second delay gives the backend server a chance to initialize before
+                  // any collators are executed, which may attempt requests against the API.
+                  initialDelay: Duration.fromObject({ seconds: 3 }),
+                });
+              indexBuilder: |
+                // collator gathers entities from announcements.
+                  indexBuilder.addCollator({
+                    schedule: tenMinutesSchedule,
+                    factory: AnnouncementCollatorFactory.fromConfig({
+                      logger: env.logger,
+                      discoveryApi: env.discovery,
+                    }),
+                  });
+      app:
+        package: "@k-phoen/backstage-plugin-announcements"
+        src:
+          appTsx:
+            import: import { AnnouncementsPage } from '@k-phoen/backstage-plugin-announcements';
+            appRoutes: <Route path="/announcements" element={<AnnouncementsPage />} />
+          components:
+            catalog:
+              entityPageTsx:
+                import: import { EntityAdrContent, isAdrAvailable } from '@backstage/plugin-adr';
+                serviceEntityPage: |
+                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
+                    <EntityAdrContent />
+                  </EntityLayout.Route>
+            search:
+              searchPageTsx:
+                import: |-
+                  import { AnnouncementSearchResultListItem } from '@k-phoen/backstage-plugin-announcements';
+                  import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+                searchType: |-
+                  {
+                    value: 'announcements',
+                    name: 'Announcements',
+                    icon: <RecordVoiceOverIcon />,
+                  },
+                searchResult: >-
+                  <AdrSearchResultListItem icon={<DocsIcon />} />
+
+    - name: Badges
+      doc: https://github.com/backstage/backstage/blob/master/plugins/badges/README.md
+      backend:
+        package: "packages/backend @backstage/plugin-badges-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/badges.ts
+            destination: packages/backend/src/plugins/badges.ts
+        src:
+          indexTs:
+            import: import badges from './plugins/badges';
+            useHotMemoize: const badgesEnv = useHotMemoize(module, () => createEnv('badges'));
+            apiRouter: apiRouter.use('/badges', await badges(badgesEnv));
+      app:
+        package: "@backstage/plugin-badges"
+        src:
+          appTsx:
+            import: import { badgesPlugin } from '@backstage/plugin-badges';
+            createApp:
+              plugin: badgesPlugin,
+          components:
+            catalog:
+              entityPageTsx:
+                import: >-
+                  import { EntityBadgesDialog } from '@backstage/plugin-badges';
+                  import BadgeIcon from '@material-ui/icons/CallToAction';
+                  import React, { ReactNode, useMemo, useState } from 'react';
+                serviceEntityPage: |
+                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
+                    <EntityAdrContent />
+                  </EntityLayout.Route>
