@@ -106,7 +106,7 @@ const routes = (
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     // Plugin integrations
     {{#each spec.plugins}}
-    {{{app.src.appTsx.appRoutes}}}
+    {{{app.src.appTsx.flatRoutes}}}
     {{/each}}
   </FlatRoutes>
 );

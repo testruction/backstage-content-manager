@@ -1,5 +1,7 @@
 apiVersion: integrations.backstage.io/v1alpha1
-kind: BackendPlugin
+kind: Plugin
+metadata:
+  name: testruction.io
 spec:
   plugins:
     - name: Architecture Decision Records
@@ -145,7 +147,7 @@ spec:
         src:
           appTsx:
             import: import { AnnouncementsPage } from '@k-phoen/backstage-plugin-announcements';
-            appRoutes: <Route path="/announcements" element={<AnnouncementsPage />} />
+            flatRoutes: <Route path="/announcements" element={<AnnouncementsPage />} />
           components:
             catalog:
               entityPageTsx:
@@ -171,7 +173,7 @@ spec:
     - name: Badges
       doc: https://github.com/backstage/backstage/blob/master/plugins/badges/README.md
       backend:
-        package: "packages/backend @backstage/plugin-badges-backend"
+        package: "@backstage/plugin-badges-backend"
         scripts:
           - type: remote
             url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/badges.ts
@@ -182,7 +184,7 @@ spec:
             useHotMemoize: const badgesEnv = useHotMemoize(module, () => createEnv('badges'));
             apiRouter: apiRouter.use('/badges', await badges(badgesEnv));
       app:
-        package: "@backstage/plugin-badges"
+        package: "@backstage/plugin-badges-backend"
         src:
           appTsx:
             import: import { badgesPlugin } from '@backstage/plugin-badges';
@@ -199,3 +201,80 @@ spec:
                   <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
                     <EntityAdrContent />
                   </EntityLayout.Route>
+
+    - name: DevTools (secure)
+      doc: https://github.com/backstage/backstage/blob/master/plugins/devtools/README.md
+      backend:
+        package: "@backstage/plugin-devtools-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/raw/v1.18.3/packages/backend/src/plugins/devtools.ts
+            destination: packages/backend/src/plugins/devtools.ts
+        src:
+          indexTs:
+            import: import devTools from './plugins/devtools';
+            useHotMemoize: const devToolsEnv = useHotMemoize(module, () => createEnv('devtools'));
+            apiRouter: apiRouter.use('/devtools', await devTools(devToolsEnv));
+      app:
+        package: >-
+          @backstage/plugin-devtools
+          @backstage/plugin-devtools-common
+        src:
+          appTsx:
+            import: |-
+              import { DevToolsPage } from '@backstage/plugin-devtools';
+              import { customDevToolsPage } from './components/devtools/CustomDevToolsPage';
+              import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+            flatRoutes: |-
+              <Route path="/devtools"
+                element={
+                <RequirePermission permission={devToolsAdministerPermission}>
+                  <DevToolsPage />
+                </RequirePermission>
+                }
+              >
+                {customDevToolsPage}
+              </Route>
+          components:
+            catalog:
+              entityPageTsx:
+                import:  |-
+                  import { EntityBadgesDialog } from '@backstage/plugin-badges';
+                  import BadgeIcon from '@material-ui/icons/CallToAction';
+                  import React, { ReactNode, useMemo, useState } from 'react';
+                serviceEntityPage: |
+                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
+                    <EntityAdrContent />
+                  </EntityLayout.Route>
+            root:
+              rootTsx:
+                import: |-
+                  import BuildIcon from '@material-ui/icons/Build';
+                  import { devToolsAdministerPermission } from '@backstage/plugin-devtools-common';
+                  import { RequirePermission } from '@backstage/plugin-permission-react';
+                sidebarSettings: |-
+                  <RequirePermission
+                    permission={devToolsAdministerPermission}
+                    errorPage={<></>}>
+                    <SidebarItem icon={BuildIcon} to="devtools" text="DevTools" />
+                  </RequirePermission>
+            devtools:
+              customDevToolsPageTsx:
+                import: import { UnprocessedEntitiesContent } from '@backstage/plugin-catalog-unprocessed-entities';
+                devToolsLayout: |
+                  <DevToolsLayout.Route path="unprocessed-entities" title="Unprocessed Entities">
+                    <UnprocessedEntitiesContent />
+                  </DevToolsLayout.Route>
+
+    - name: Catalog Unprocessed Entities
+      doc: https://github.com/backstage/backstage/tree/master/plugins/catalog-unprocessed-entities/README.md
+      app:
+        package: "@backstage/plugin-catalog-unprocessed-entities"
+        src:
+          appTsx:
+            import: import { CatalogUnprocessedEntitiesPage } from '@backstage/plugin-catalog-unprocessed-entities';
+            flatRoutes: |-
+              <Route
+                path="/catalog-unprocessed-entities"
+                element={<CatalogUnprocessedEntitiesPage />}
+              />;
