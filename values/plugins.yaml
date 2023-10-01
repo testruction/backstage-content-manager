@@ -4,80 +4,6 @@ metadata:
   name: testruction.io
 spec:
   plugins:
-    - name: Architecture Decision Records
-      doc: https://github.com/backstage/backstage/tree/v1.18.3/plugins/adr-backend
-      backend:
-        package: "@backstage/plugin-adr-backend"
-        scripts:
-          - type: remote
-            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/adr.ts
-            destination: packages/backend/src/plugins/adr.ts
-        src:
-          indexTs:
-            import: import adr from './plugins/adr';
-            useHotMemoize: const adrEnv = useHotMemoize(module, () => createEnv('adr'));
-            apiRouter: apiRouter.use('/adr', await adr(adrEnv));
-          plugins:
-            searchTs:
-              import: import { DefaultAdrCollatorFactory } from '@backstage/plugin-adr-backend';
-              indexBuilder: |
-                // collator gathers entities from adr.
-                indexBuilder.addCollator({
-                  schedule,
-                  factory: DefaultAdrCollatorFactory.fromConfig({
-                    cache: env.cache,
-                    config: env.config,
-                    discovery: env.discovery,
-                    logger: env.logger,
-                    reader: env.reader,
-                    tokenManager: env.tokenManager,
-                  }),
-                });
-      app:
-        package: "@backstage/plugin-adr"
-        src:
-          components:
-            catalog:
-              entityPageTsx:
-                import: import { EntityAdrContent, isAdrAvailable } from '@backstage/plugin-adr';
-                serviceEntityPage: |
-                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
-                    <EntityAdrContent />
-                  </EntityLayout.Route>
-            search:
-              searchPageTsx:
-                import: |-
-                  import { AdrSearchResultListItem } from '@backstage/plugin-adr';
-                  import { AdrDocument } from '@backstage/plugin-adr-common';
-                searchType: |-
-                  {
-                    value: 'adr',
-                    name: 'Architecture Decision Records',
-                    icon: <DocsIcon />,
-                  },
-                # searchResult: |
-                #   {({ results }) => (
-                #       <List>
-                #         {results.map(({ type, document, highlight, rank }) => {
-                #           switch (type) {
-                #             // ...
-                #             case 'adr':
-                #               return (
-                #                 <AdrSearchResultListItem
-                #                   key={document.location}
-                #                   // Not required if you're leveraging the new search results extensions available in v1.11+
-                #                   // https://backstage.io/docs/features/search/how-to-guides#2-using-an-extension-in-your-backstage-app
-                #                   result={document as AdrDocument}
-                #                 />
-                #               );
-                #             // ...
-                #           }
-                #         })}
-                #       </List>
-                #     )}
-                searchResult: >-
-                  <AdrSearchResultListItem icon={<DocsIcon />} />
-
     - name: Announcements
       doc: https://github.com/K-Phoen/backstage-plugin-announcements/blob/main/docs/setup.md
       backend:
@@ -167,6 +93,80 @@ spec:
                     name: 'Announcements',
                     icon: <RecordVoiceOverIcon />,
                   },
+                searchResult: >-
+                  <AdrSearchResultListItem icon={<DocsIcon />} />
+
+    - name: Architecture Decision Records
+      doc: https://github.com/backstage/backstage/tree/v1.18.3/plugins/adr-backend
+      backend:
+        package: "@backstage/plugin-adr-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/adr.ts
+            destination: packages/backend/src/plugins/adr.ts
+        src:
+          indexTs:
+            import: import adr from './plugins/adr';
+            useHotMemoize: const adrEnv = useHotMemoize(module, () => createEnv('adr'));
+            apiRouter: apiRouter.use('/adr', await adr(adrEnv));
+          plugins:
+            searchTs:
+              import: import { DefaultAdrCollatorFactory } from '@backstage/plugin-adr-backend';
+              indexBuilder: |
+                // collator gathers entities from adr.
+                indexBuilder.addCollator({
+                  schedule,
+                  factory: DefaultAdrCollatorFactory.fromConfig({
+                    cache: env.cache,
+                    config: env.config,
+                    discovery: env.discovery,
+                    logger: env.logger,
+                    reader: env.reader,
+                    tokenManager: env.tokenManager,
+                  }),
+                });
+      app:
+        package: "@backstage/plugin-adr"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: import { EntityAdrContent, isAdrAvailable } from '@backstage/plugin-adr';
+                serviceEntityPage: |
+                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
+                    <EntityAdrContent />
+                  </EntityLayout.Route>
+            search:
+              searchPageTsx:
+                import: |-
+                  import { AdrSearchResultListItem } from '@backstage/plugin-adr';
+                  import { AdrDocument } from '@backstage/plugin-adr-common';
+                searchType: |-
+                  {
+                    value: 'adr',
+                    name: 'Architecture Decision Records',
+                    icon: <DocsIcon />,
+                  },
+                # searchResult: |
+                #   {({ results }) => (
+                #       <List>
+                #         {results.map(({ type, document, highlight, rank }) => {
+                #           switch (type) {
+                #             // ...
+                #             case 'adr':
+                #               return (
+                #                 <AdrSearchResultListItem
+                #                   key={document.location}
+                #                   // Not required if you're leveraging the new search results extensions available in v1.11+
+                #                   // https://backstage.io/docs/features/search/how-to-guides#2-using-an-extension-in-your-backstage-app
+                #                   result={document as AdrDocument}
+                #                 />
+                #               );
+                #             // ...
+                #           }
+                #         })}
+                #       </List>
+                #     )}
                 searchResult: >-
                   <AdrSearchResultListItem icon={<DocsIcon />} />
 
@@ -321,7 +321,7 @@ spec:
             catalog:
               entityPageTsx:
                 coreComponents: InfoCard,
-                import:  |-
+                import: |-
                   import {
                     EntityFeedbackResponseContent,
                     EntityLikeDislikeRatingsCard,
@@ -345,3 +345,78 @@ spec:
                   <Grid item xs={12}>
                     <EntityLikeDislikeRatingsCard />
                   </Grid>
+
+    - name: Todo
+      doc: https://github.com/backstage/backstage/tree/master/plugins/todo
+      backend:
+        package: "@backstage/plugin-todo-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/todo.ts
+            destination: packages/backend/src/plugins/todo.ts
+        src:
+          indexTs:
+            import: import todo from './plugins/todo';
+            useHotMemoize: const todoEnv = useHotMemoize(module, () => createEnv('todo'));
+            apiRouter: apiRouter.use('/todo', await todo(todoEnv));
+      app:
+        package: "@backstage/plugin-todo"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: import { EntityTodoContent } from '@backstage/plugin-todo';
+                serviceEntityPage: |
+                  <EntityLayout.Route path="/todo" title="Todo">
+                    <EntityTodoContent />
+                  </EntityLayout.Route>
+
+    - name: Q&A
+      doc: https://github.com/drodil/backstage-plugin-qeta/blob/main/docs/setup.md
+      backend:
+        package: "@drodil/backstage-plugin-qeta-backend"
+        scripts:
+          - type: inline
+            script: |
+              import {
+                createRouter,
+                DatabaseQetaStore,
+              } from '@drodil/backstage-plugin-qeta-backend';
+              import { PluginEnvironment } from '../types';
+
+              export default async function createPlugin({
+                logger,
+                database,
+                identity,
+                config,
+              }: PluginEnvironment) {
+                const db = await DatabaseQetaStore.create({
+                  database: database,
+                });
+                return createRouter({
+                  logger,
+                  database: db,
+                  identity,
+                  config,
+                });
+              }
+            destination: packages/backend/src/plugins/qeta.ts
+        src:
+          indexTs:
+            import: import qeta from './plugins/qeta';
+            useHotMemoize: const qetaEnv = useHotMemoize(module, () => createEnv('qeta'));
+            apiRouter: apiRouter.use('/qeta', await qeta(qetaEnv));
+      app:
+        package: "@drodil/backstage-plugin-qeta"
+        src:
+          appTsx:
+            import: import { QetaPage } from '@drodil/backstage-plugin-qeta';
+            flatRoutes: >-
+              <Route path="/qeta" element={<QetaPage title="Questions" />} />
+          components:
+            root:
+              rootTsx:
+                import: import LiveHelpIcon from '@material-ui/icons/LiveHelp';
+                sidebarPage: >-
+                  <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
+                

@@ -94,5 +94,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
     </Sidebar>
     {children}
+    
+    // Plugin 
+    {{#each spec.plugins}}
+    {{{app.src.components.root.rootTsx.sidebarSettings}}}
+    {{/each}}
   </SidebarPage>
 );
