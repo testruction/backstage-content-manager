@@ -202,6 +202,28 @@ spec:
                     <EntityAdrContent />
                   </EntityLayout.Route>
 
+    - name: Catalog Backend Module for GitHub
+      doc: https://github.com/backstage/backstage/tree/master/plugins/catalog-backend-module-github/README.md
+      backend:
+        package: "@backstage/plugin-catalog-backend-module-github"
+        src:
+          plugins:
+            catalogTs:
+              import: import { GithubEntityProvider } from '@backstage/plugin-catalog-backend-module-github';
+                createPlugin: |-
+                  builder.addEntityProvider(
+                    GithubEntityProvider.fromConfig(env.config, {
+                      logger: env.logger,
+                      // optional: alternatively, use scheduler with schedule defined in app-config.yaml
+                      schedule: env.scheduler.createScheduledTaskRunner({
+                        frequency: { minutes: 30 },
+                        timeout: { minutes: 3 },
+                      }),
+                      // optional: alternatively, use schedule
+                      scheduler: env.scheduler,
+                    }),
+                  );
+
     - name: DevTools (secure)
       doc: https://github.com/backstage/backstage/blob/master/plugins/devtools/README.md
       backend:
@@ -278,3 +300,48 @@ spec:
                 path="/catalog-unprocessed-entities"
                 element={<CatalogUnprocessedEntitiesPage />}
               />;
+
+    - name: Entity Feedback
+      doc: https://github.com/backstage/backstage/tree/master/plugins/entity-feedback/README.md
+      backend:
+        package: "@backstage/plugin-entity-feedback-backend"
+        scripts:
+          - type: remote
+            url: https://github.com/backstage/backstage/blob/v1.18.3/packages/backend/src/plugins/adr.ts
+            destination: packages/backend/src/plugins/entityFeedback.ts
+        src:
+          indexTs:
+            import: import entityFeedback from './plugins/entityFeedback';
+            useHotMemoize: const entityFeedbackEnv = useHotMemoize(module, () => createEnv('entityFeedback'));
+            apiRouter: apiRouter.use('/entity-feedback', await entityFeedback(entityFeedbackEnv));
+      app:
+        package: "@backstage/plugin-entity-feedback"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                coreComponents: InfoCard,
+                import:  |-
+                  import {
+                    EntityFeedbackResponseContent,
+                    EntityLikeDislikeRatingsCard,
+                    LikeDislikeButtons,
+                  } from '@backstage/plugin-entity-feedback';
+                overviewContent: |
+                  <Grid item md={2}>
+                    <InfoCard title="Rate this entity">
+                      <LikeDislikeButtons />
+                    </InfoCard>
+                  </Grid>
+                serviceEntityPage: |
+                  <EntityLayout.Route path="/feedback" title="Feedback">
+                    <EntityFeedbackResponseContent />
+                  </EntityLayout.Route>
+                userPage:
+                  <Grid item xs={12}>
+                    <EntityLikeDislikeRatingsCard />
+                  </Grid>
+                groupPage:
+                  <Grid item xs={12}>
+                    <EntityLikeDislikeRatingsCard />
+                  </Grid>

@@ -39,7 +39,14 @@ import {
   EntityOwnershipCard,
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
-import { EmptyState } from '@backstage/core-components';
+import {
+  EmptyState,
+
+  // Plugin integrations
+  {{#each spec.plugins}}
+  {{{app.src.components.catalog.entityPageTsx.coreComponents}}}
+  {{/each}}
+} from '@backstage/core-components';
 import {
   Direction,
   EntityCatalogGraphCard,
@@ -142,6 +149,11 @@ const overviewContent = (
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
+
+    // Plugin integrations
+    {{#each spec.plugins}}
+    {{{app.src.components.catalog.entityPageTsx.overviewContent}}}
+    {{/each}}
   </Grid>
 );
 
@@ -181,6 +193,7 @@ const serviceEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
+    // Plugin integrations
     {{#each spec.plugins}}
     {{{app.src.components.catalog.entityPageTsx.serviceEntityPage}}}
     {{/each}}
@@ -210,6 +223,11 @@ const websiteEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+
+    // Plugin integrations
+    {{#each spec.plugins}}
+    {{{app.src.components.catalog.entityPageTsx.websiteEntityPage}}}
+    {{/each}}
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -292,6 +310,11 @@ const userPage = (
         </Grid>
         <Grid item xs={12} md={6}>
           <EntityOwnershipCard variant="gridItem" />
+
+        // Plugin integrations
+        {{#each spec.plugins}}
+        {{{app.src.components.catalog.entityPageTsx.userPage}}}
+        {{/each}}
         </Grid>
       </Grid>
     </EntityLayout.Route>
@@ -311,6 +334,11 @@ const groupPage = (
         </Grid>
         <Grid item xs={12}>
           <EntityMembersListCard />
+        
+        // Plugin integrations
+        {{#each spec.plugins}}
+        {{{app.src.components.catalog.entityPageTsx.groupPage}}}
+        {{/each}}
         </Grid>
       </Grid>
     </EntityLayout.Route>

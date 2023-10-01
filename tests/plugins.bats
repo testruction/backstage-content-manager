@@ -27,6 +27,12 @@ setup() {
     assert_output --partial 'announcements'
 }
 
+@test "Rendering 'packages/backend/src/plugins/catalog.ts'" {
+    run tests/packages-backend-src-plugins-catalog.sh
+    assert_output --partial 'catalog'
+}
+
+
 @test "Rendering 'packages/app/src/components/catalog/EntityPage.tsx'" {
     run tests/packages-app-src-components-catalog-entitypage.sh
     assert_output --partial 'adr'
