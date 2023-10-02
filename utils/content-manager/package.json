@@ -1,0 +1,32 @@
+{
+    "name": "@testruction/nunjucks-cli",
+    "version": "0.0.1",
+    "description": "A tiny cli to handle plugin injection into Backstage (https://backstage.io)",
+    "main": "src/index.js",
+    "bin": {
+        "njk": "./src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/testruction/nunjucks-cli.git"
+    },
+    "keywords": [
+        "nunjucks",
+        "cli",
+        "yml",
+        "yaml"
+    ],
+    "author": "fjudith",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/testruction/nunjucks-cli/issues"
+    },
+    "homepage": "https://github.com/testruction/nunjucks-cli#readme",
+    "dependencies": {
+        "glob": "^7.1.6",
+        "nunjucks": "^3.2.4",
+        "supports-color": "^9.4.0",
+        "yamljs": "^0.3.0",
+        "yargs": "^17.7.2"
+    }
+}

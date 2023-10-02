@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-node bin/hb.js --stdout true \
-  --template templates/packages/app/src/components/catalog/EntityPage.tsx.hbs \
+node utils/content-manager/src/index.ts \
+  --stdout true \
+  --template templates/packages/app/src/components/catalog/EntityPage.tsx.njk \
   --input values/plugins.yaml

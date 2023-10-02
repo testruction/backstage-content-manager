@@ -29,20 +29,20 @@ setup() {
     assert_output --partial '/badges'
     # DevTools
     assert_output --partial 'devtools'
-    assert_output --partial 'devToolEnv'
+    assert_output --partial 'devToolsEnv'
     assert_output --partial '/devtools'
     # Entity Feedback
     assert_output --partial 'entityFeedback'
     assert_output --partial 'entityFeedbackEnv'
     assert_output --partial '/entity-feedback'
     # Todo
-    assert_output --partial 'toto'
+    assert_output --partial 'todo'
     assert_output --partial 'todoEnv'
     assert_output --partial '/todo'
     # Qeta
     assert_output --partial 'qeta'
     assert_output --partial 'qetaEnv'
-    assert_output --partial '/queta'
+    assert_output --partial '/qeta'
 
     assert_output --partial 'announcements'
     assert_output --partial 'badges'
@@ -62,7 +62,7 @@ setup() {
 @test "Rendering 'packages/backend/src/plugins/catalog.ts'" {
     run tests/packages-backend-src-plugins-catalog.sh
     # Catalog Backend for Github
-    assert_output --partial 'plugin-catalog-backend-module-github'
+    assert_output --partial 'catalog-backend-module-github'
     assert_output --partial 'GithubEntityProvider'
 }
 
@@ -126,13 +126,11 @@ setup() {
     assert_output --partial 'entity-validation'
 }
 
-
 @test "Rendering 'packages/app/src/components/devtools/CustomDevToolsPage.tsx'" {
     run tests/packages-app-src-components-devtools-customdevtoolspage.sh
-    assert_output --partial 'devtools'
-
+    assert_output --partial 'catalog-unprocessed-entities'
+    assert_output --partial 'UnprocessedEntitiesContent'
 }
-
 
 @test "Rendering 'packages/app/src/App.tsx'" {
     run tests/packages-app-src-app.sh
@@ -141,5 +139,3 @@ setup() {
     assert_output --partial 'devtools'
     assert_output --partial 'catalog-unprocessed-entities'
 }
-
-
