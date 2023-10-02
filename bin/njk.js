@@ -6,8 +6,9 @@ const process = require("process");
 const glob = require("glob");
 const yargs = require("yargs");
 const yamljs = require("yamljs")
-const handlebars = require("handlebars");
-require('handlebars-helpers')({ handlebars: handlebars });
+// const handlebars = require("handlebars");
+const nunjucks = require("nunjucks");
+// require('handlebars-helpers')({ handlebars: handlebars });
 
 getPath = (file) => {
   return path.join(process.cwd(), file);
@@ -49,20 +50,21 @@ getGlobContents = (glob) => {
   return contents;
 }
 
-loadHelpers = (options) => {
-  var folder = path.dirname(options.template.split(',')[0]);
-  globber(folder, "**/*.helper.js", (m) => {
-    var helper = fs.readFileSync(m).toString();
-    var name = path.parse(m).name.split(".")[0];
-    handlebars.registerHelper(name, eval(helper));
-  });
-}
+// loadHelpers = (options) => {
+//   var folder = path.dirname(options.template.split(',')[0]);
+//   globber(folder, "**/*.helper.js", (m) => {
+//     var helper = fs.readFileSync(m).toString();
+//     var name = path.parse(m).name.split(".")[0];
+//     handlebars.registerHelper(name, eval(helper));
+//   });
+// }
 
 transform = (template, input) => {
   var inputYaml = yamljs.parse(input);
-  var compiled = handlebars.compile(template);
-  var result = compiled(inputYaml);
-  return result.trim();
+  // var compiled = handlebars.compile(template);
+  return nunjucks.renderString(template, inputYaml);
+  // var result = compiled(inputYaml);
+  // return result.trim();
 }
 
 processTransformOutput = (result, outputPath, stdout) => {
@@ -106,7 +108,8 @@ globTransform = (options) => {
 
 const options = yargs
   .usage("Usage: -t <template> -i <input> -o <output>")
-  .option("t", { alias: "template", describe: "The path to the handlebars template", type: "string", demandOption: false })
+  // .option("t", { alias: "template", describe: "The path to the handlebars template", type: "string", demandOption: false })
+  .option("t", { alias: "template", describe: "The path to the nunjucks template", type: "string", demandOption: false })
   .option("i", { alias: "input", describe: "The path of the input yml file, can be '**/*.yml'", type: "string", demandOption: false })
   .option("o", { alias: "output", describe: "The path for the transformed output, can be folder", type: "string", demandOption: false, default: "." })
   .option("e", { alias: "extension", describe: "The output extension", type: "string", demandOption: false, default: ".out" })
@@ -117,7 +120,7 @@ const options = yargs
 
 try {
   if (options.input && options.template && options.output) {
-    loadHelpers(options);
+    // loadHelpers(options);
     globTransform(options);
   } else {
     console.log("Invalid options, please use '--help'");

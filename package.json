@@ -4,33 +4,34 @@
     "description": "A tiny cli to handle plugin injection into Backstage (https://backstage.io)",
     "main": "bin/hb.js",
     "bin": {
-      "hb": "./bin/hb.js"
+        "hb": "./bin/hb.js"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/testruciton/backstage-customize.git"
+        "type": "git",
+        "url": "git+https://github.com/testruciton/backstage-customize.git"
     },
     "keywords": [
-      "handlebars",
-      "cli",
-      "yml",
-      "yaml",
-      "backstage",
-      "plugin",
-      "customization"
+        "handlebars",
+        "cli",
+        "yml",
+        "yaml",
+        "backstage",
+        "plugin",
+        "customization"
     ],
     "author": "fjudith",
     "license": "Apache-2.0",
     "bugs": {
-      "url": "https://github.com/testruciton/backstage-customize/issues"
+        "url": "https://github.com/testruciton/backstage-customize/issues"
     },
     "homepage": "https://github.com/testruciton/backstage-customize#readme",
     "dependencies": {
-      "glob": "^7.1.6",
-      "handlebars": "^4.7.8",
-      "handlebars-helpers": "^0.10.0",
-      "yamljs": "^0.3.0",
-      "yargs": "^17.7.2",
-      "supports-color": "^9.4.0"
+        "glob": "^7.1.6",
+        "handlebars": "^4.7.8",
+        "handlebars-helpers": "^0.10.0",
+        "nunjucks": "^3.2.4",
+        "supports-color": "^9.4.0",
+        "yamljs": "^0.3.0",
+        "yargs": "^17.7.2"
     }
-  }
+}

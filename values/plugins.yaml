@@ -75,13 +75,13 @@ spec:
                 });
               indexBuilder: |
                 // collator gathers entities from announcements.
-                  indexBuilder.addCollator({
-                    schedule: tenMinutesSchedule,
-                    factory: AnnouncementCollatorFactory.fromConfig({
-                      logger: env.logger,
-                      discoveryApi: env.discovery,
-                    }),
-                  });
+                indexBuilder.addCollator({
+                  schedule: tenMinutesSchedule,
+                  factory: AnnouncementCollatorFactory.fromConfig({
+                    logger: env.logger,
+                    discoveryApi: env.discovery,
+                  }),
+                });
       app:
         package: "@k-phoen/backstage-plugin-announcements"
         src:
@@ -89,13 +89,6 @@ spec:
             import: import { AnnouncementsPage } from '@k-phoen/backstage-plugin-announcements';
             flatRoutes: <Route path="/announcements" element={<AnnouncementsPage />} />
           components:
-            catalog:
-              entityPageTsx:
-                import: import { EntityAdrContent, isAdrAvailable } from '@backstage/plugin-adr';
-                serviceEntityPage: |
-                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
-                    <EntityAdrContent />
-                  </EntityLayout.Route>
             search:
               searchPageTsx:
                 import: |-
@@ -111,6 +104,20 @@ spec:
                   <AdrSearchResultListItem icon={<DocsIcon />} />
             home:
               homePageTsx:
+                # # Banner mode
+                # homePage: |
+                #   <Page themeId="home">
+                #     <Header title="NewAnnouncementBanner" />
+
+                #     <Content>
+                #       <Grid container>
+                #         <Grid item md={12}>
+                #           <NewAnnouncementBanner />
+                #         </Grid>
+                #       </Grid>
+                #     </Content>
+                #   </Page>
+                # Card mode
                 homePage: |
                   <Page themeId="home">
                     <Header title="AnnouncementsCard" />
@@ -238,19 +245,19 @@ spec:
           plugins:
             catalogTs:
               import: import { GithubEntityProvider } from '@backstage/plugin-catalog-backend-module-github';
-                createPlugin: |-
-                  builder.addEntityProvider(
-                    GithubEntityProvider.fromConfig(env.config, {
-                      logger: env.logger,
-                      // optional: alternatively, use scheduler with schedule defined in app-config.yaml
-                      schedule: env.scheduler.createScheduledTaskRunner({
-                        frequency: { minutes: 30 },
-                        timeout: { minutes: 3 },
-                      }),
-                      // optional: alternatively, use schedule
-                      scheduler: env.scheduler,
+              createPlugin: |-
+                builder.addEntityProvider(
+                  GithubEntityProvider.fromConfig(env.config, {
+                    logger: env.logger,
+                    // optional: alternatively, use scheduler with schedule defined in app-config.yaml
+                    schedule: env.scheduler.createScheduledTaskRunner({
+                      frequency: { minutes: 30 },
+                      timeout: { minutes: 3 },
                     }),
-                  );
+                    // optional: alternatively, use schedule
+                    scheduler: env.scheduler,
+                  }),
+                );
 
     - name: DevTools (secure)
       doc: https://github.com/backstage/backstage/blob/master/plugins/devtools/README.md
@@ -286,16 +293,6 @@ spec:
                 {customDevToolsPage}
               </Route>
           components:
-            catalog:
-              entityPageTsx:
-                import:  |-
-                  import { EntityBadgesDialog } from '@backstage/plugin-badges';
-                  import BadgeIcon from '@material-ui/icons/CallToAction';
-                  import React, { ReactNode, useMemo, useState } from 'react';
-                serviceEntityPage: |
-                  <EntityLayout.Route if={isAdrAvailable} path="/adrs" title="ADRs">
-                    <EntityAdrContent />
-                  </EntityLayout.Route>
             root:
               rootTsx:
                 import: |-
@@ -365,11 +362,11 @@ spec:
                   <EntityLayout.Route path="/feedback" title="Feedback">
                     <EntityFeedbackResponseContent />
                   </EntityLayout.Route>
-                userPage:
+                userPage: |
                   <Grid item xs={12}>
                     <EntityLikeDislikeRatingsCard />
                   </Grid>
-                groupPage:
+                groupPage: |
                   <Grid item xs={12}>
                     <EntityLikeDislikeRatingsCard />
                   </Grid>
@@ -487,13 +484,17 @@ spec:
           components:
             catalog:
               entityPageTsx:
+                # Service Entity mode
                 import: >-
                   import { EntityGithubPullRequestsContent } from '@roadiehq/backstage-plugin-github-pull-requests';
                 serviceEntityPage: |-
                   <EntityLayout.Route path="/pull-requests" title="Pull Requests">
                     <EntityGithubPullRequestsContent />
                   </EntityLayout.Route>
-                overviewContent: |-
-                  <Grid item md={6}>
-                    <EntityGithubPullRequestsOverviewCard />
-                  </Grid>
+                # # Card mode
+                # import: >-
+                #   import { EntityGithubPullRequestsOverviewCard } from '@roadiehq/backstage-plugin-github-pull-requests';
+                # overviewContent: |-
+                #   <Grid item md={6}>
+                #     <EntityGithubPullRequestsOverviewCard />
+                #   </Grid>
