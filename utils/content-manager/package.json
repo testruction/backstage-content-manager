@@ -1,8 +1,11 @@
 {
     "name": "@testruction/nunjucks-cli",
     "version": "0.0.1",
+    "author": "Testruction",
     "description": "A tiny cli to handle plugin injection into Backstage (https://backstage.io)",
     "main": "src/index.js",
+    "license": "Apache-2.0",
+    "private": false,
     "bin": {
         "njk": "./src/index.js"
     },
@@ -16,8 +19,6 @@
         "yml",
         "yaml"
     ],
-    "author": "fjudith",
-    "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/testruction/nunjucks-cli/issues"
     },
