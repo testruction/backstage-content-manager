@@ -6,9 +6,7 @@ const process = require("process");
 const glob = require("glob");
 const yargs = require("yargs");
 const yamljs = require("yamljs")
-// const handlebars = require("handlebars");
 const nunjucks = require("nunjucks");
-// require('handlebars-helpers')({ handlebars: handlebars });
 
 getPath = (file) => {
   return path.join(process.cwd(), file);
@@ -50,21 +48,9 @@ getGlobContents = (glob) => {
   return contents;
 }
 
-// loadHelpers = (options) => {
-//   var folder = path.dirname(options.template.split(',')[0]);
-//   globber(folder, "**/*.helper.js", (m) => {
-//     var helper = fs.readFileSync(m).toString();
-//     var name = path.parse(m).name.split(".")[0];
-//     handlebars.registerHelper(name, eval(helper));
-//   });
-// }
-
 transform = (template, input) => {
   var inputYaml = yamljs.parse(input);
-  // var compiled = handlebars.compile(template);
   return nunjucks.renderString(template, inputYaml);
-  // var result = compiled(inputYaml);
-  // return result.trim();
 }
 
 processTransformOutput = (result, outputPath, stdout) => {
@@ -120,7 +106,6 @@ const options = yargs
 
 try {
   if (options.input && options.template && options.output) {
-    // loadHelpers(options);
     globTransform(options);
   } else {
     console.log("Invalid options, please use '--help'");
