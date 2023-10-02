@@ -106,29 +106,18 @@ spec:
               homePageTsx:
                 # # Banner mode
                 # homePage: |
-                #   <Page themeId="home">
-                #     <Header title="NewAnnouncementBanner" />
-                #     <Content>
-                #       <Grid container>
-                #         <Grid item md={12}>
-                #           <NewAnnouncementBanner />
-                #         </Grid>
-                #       </Grid>
-                #     </Content>
-                #   </Page>
+                #   <Grid container>
+                #     <Grid item md={12}>
+                #       <NewAnnouncementBanner />
+                #     </Grid>
+                #   </Grid>
                 # Card mode
                 homePage: |
-                  <Page themeId="home">
-                    <Header title="AnnouncementsCard" />
-
-                    <Content>
-                      <Grid container>
-                        <Grid item md={6}>
-                          <AnnouncementsCard max={3} />
-                        </Grid>
-                      </Grid>
-                    </Content>
-                  </Page>
+                  <Grid container>
+                    <Grid item md={6}>
+                      <AnnouncementsCard max={3} />
+                    </Grid>
+                  </Grid>
 
     - name: Architecture Decision Records
       doc: https://github.com/backstage/backstage/tree/v1.18.3/plugins/adr-backend
@@ -497,3 +486,63 @@ spec:
                 #   <Grid item md={6}>
                 #     <EntityGithubPullRequestsOverviewCard />
                 #   </Grid>
+
+    - name: Markdown Home page
+      doc: https://github.com/RoadieHQ/roadie-backstage-plugins/tree/main/plugins/home/backstage-plugin-home-markdown
+      app:
+        package: "@roadiehq/backstage-plugin-home-markdown"
+        src:
+          components:
+            home:
+              homePageTsx:
+                import: >-
+                  import { HomePageMarkdown } from '@roadiehq/backstage-plugin-home-markdown';
+                homePage: |-
+                  <Grid item xs={12} md={6}>
+                    <HomePageMarkdown
+                        title="Neeews!"
+                        owner="RoadieHQ"
+                        repo="roadie-backstage-plugins"
+                        path=".backstage/README.md"
+                    />
+                  </Grid>
+
+    - name: Jira
+      doc: https://github.com/RoadieHQ/roadie-backstage-plugins/tree/main/plugins/home/backstage-plugin-home-markdown
+      app:
+        package: "@roadiehq/backstage-plugin-jira"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: |-
+                  import {
+                    EntityJiraOverviewCard,
+                    isJiraAvailable,
+                  } from '@roadiehq/backstage-plugin-jira';
+                serviceEntityPage: |-
+                  <EntitySwitch>
+                    <EntitySwitch.Case if={isJiraAvailable}>
+                      <Grid item md={6}>
+                        <EntityJiraOverviewCard />
+                      </Grid>
+                    </EntitySwitch.Case>
+                  </EntitySwitch>
+
+    - name: TechDocs Addon Mermaid
+      doc: https://github.com/johanneswuerbach/backstage-plugin-techdocs-addon-mermaid/blob/main/README.md
+      app:
+        package: "backstage-plugin-techdocs-addon-mermaid"
+        src:
+          appTsx:
+            import: >-
+              import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+            techDocsAddons: |-
+              <Mermaid config={{ theme: 'forest', themeVariables: { lineColor: '#000000' } }} />
+          components:
+            catalog:
+              entityPageTsx:
+                import: |-
+                  import { Mermaid } from 'backstage-plugin-techdocs-addon-mermaid';
+                techDocsAddons: |-
+                  <Mermaid config={{ theme: 'forest', themeVariables: { lineColor: '#000000' } }} />

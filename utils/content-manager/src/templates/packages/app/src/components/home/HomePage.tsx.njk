@@ -1,14 +1,26 @@
 import React from 'react';
 
+// Plugins integrations
+{%- for plugin in spec.plugins -%}
+{%- if plugin.app.src.components.home.homePageTsx.import %}
+{{ plugin.app.src.components.home.homePageTsx.import | safe | indent(8) }}
+{%- endif -%}
+{%- endfor %}
+
 export const homePage = (
   /* TODO: Compose a Home Page here */
   
   return (
-    // Plugins integrations
-    {%- for plugin in spec.plugins -%}
-    {%- if plugin.app.src.components.home.homePageTsx.homePage %}
-    {{ plugin.app.src.components.home.homePageTsx.homePage | safe | indent(4) }}
-    {%- endif -%}
-    {%- endfor %}
+    <Page themeId="home">
+      <Header title="Home" />
+      <Content>
+        // Plugins integrations
+        {%- for plugin in spec.plugins -%}
+        {%- if plugin.app.src.components.home.homePageTsx.homePage %}
+        {{ plugin.app.src.components.home.homePageTsx.homePage | safe | indent(8) }}
+        {%- endif -%}
+        {%- endfor %}
+      </Content>
+    </Page>
   );
 );

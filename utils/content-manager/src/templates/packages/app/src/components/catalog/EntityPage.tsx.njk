@@ -78,6 +78,13 @@ const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
       <ReportIssue />
+
+      // Plugin integrations
+      {%- for plugin in spec.plugins -%}
+      {%- if plugin.app.src.components.catalog.entityPageTsx.techDocsAddons %}
+      {{ plugin.app.src.components.catalog.entityPageTsx.techDocsAddons | safe | indent(6) }}
+      {%- endif -%}
+      {%- endfor %}
     </TechDocsAddons>
   </EntityTechdocsContent>
 );

@@ -88,6 +88,13 @@ const routes = (
     >
       <TechDocsAddons>
         <ReportIssue />
+
+        // Plugin integrations
+        {%- for plugin in spec.plugins -%}
+        {%- if plugin.app.src.appTsx.techDocsAddons %}
+        {{ plugin.app.src.appTsx.techDocsAddons | safe | indent(8) }}
+        {%- endif -%}
+        {%- endfor %}
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />

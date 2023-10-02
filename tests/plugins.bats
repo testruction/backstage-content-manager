@@ -92,6 +92,12 @@ setup() {
     # Github Pull Requests
     assert_output --partial 'EntityGithubPullRequestsContent'
     assert_output --partial '<EntityGithubPullRequestsContent />'
+    # Jira
+    assert_output --partial 'EntityJiraOverviewCard'
+    assert_output --partial '<EntityJiraOverviewCard />'
+    # Techdocs Addon Mermaid
+    assert_output --partial 'techdocs-addon-mermaid'
+    assert_output --partial '<Mermaid'
 }
 
 @test "Rendering 'packages/app/src/components/search/SearchPage.tsx'" {
@@ -110,6 +116,8 @@ setup() {
     run tests/packages-app-src-components-home-homepage.sh
     # Announcements
     assert_output --partial '<Announcements'
+    # Home Page Markdown
+    assert_output --partial '<HomePageMarkdown'
 }
 
 @test "Rendering 'packages/app/src/components/root/Root.tsx'" {
@@ -120,7 +128,7 @@ setup() {
     assert_output --partial '{devToolsAdministerPermission}'
     # Qeta
     assert_output --partial 'LiveHelpIcon'
-    assert_output --partial 'queta'
+    assert_output --partial 'qeta'
     # Entity Valition
     assert_output --partial 'LiveHelpIcon'
     assert_output --partial 'entity-validation'
@@ -138,4 +146,7 @@ setup() {
     assert_output --partial 'badges'
     assert_output --partial 'devtools'
     assert_output --partial 'catalog-unprocessed-entities'
+    # Techdocs Addon Mermaid
+    assert_output --partial 'techdocs-addon-mermaid'
+    assert_output --partial '<Mermaid'
 }
