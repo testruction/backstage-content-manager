@@ -1,37 +1,55 @@
 {
-    "name": "@testruction/handlebars-cli",
-    "version": "0.0.1",
-    "description": "A tiny cli to handle plugin injection into Backstage (https://backstage.io)",
-    "main": "bin/hb.js",
-    "bin": {
-        "hb": "./bin/hb.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/testruciton/backstage-customize.git"
-    },
-    "keywords": [
-        "handlebars",
-        "cli",
-        "yml",
-        "yaml",
-        "backstage",
-        "plugin",
-        "customization"
+  "name": "root",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "16 || 18"
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "build-image": "yarn workspace backend build-image",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "new": "backstage-cli new --scope internal"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.22.13",
+    "@spotify/prettier-config": "^12.0.0",
+    "concurrently": "^8.0.0",
+    "lerna": "^4.0.0",
+    "node-gyp": "^9.0.0",
+    "prettier": "^2.3.2",
+    "typescript": "~5.2.0"
+  },
+  "resolutions": {
+    "@types/react": "^17",
+    "@types/react-dom": "^17"
+  },
+  "prettier": "@spotify/prettier-config",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
     ],
-    "author": "fjudith",
-    "license": "Apache-2.0",
-    "bugs": {
-        "url": "https://github.com/testruciton/backstage-customize/issues"
-    },
-    "homepage": "https://github.com/testruciton/backstage-customize#readme",
-    "dependencies": {
-        "glob": "^7.1.6",
-        "handlebars": "^4.7.8",
-        "handlebars-helpers": "^0.10.0",
-        "nunjucks": "^3.2.4",
-        "supports-color": "^9.4.0",
-        "yamljs": "^0.3.0",
-        "yargs": "^17.7.2"
-    }
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }

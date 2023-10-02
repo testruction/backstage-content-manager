@@ -1,9 +1,10 @@
-# backstage-customize
+# [Backstage](https://backstage.io)
 
-## Testing
+This is your newly scaffolded Backstage App, Good Luck!
 
-```bash
-git submodule init && git submodule update
+To start the app, run:
 
-bats tests/plugins.bats
+```sh
+yarn install
+yarn dev
 ```
