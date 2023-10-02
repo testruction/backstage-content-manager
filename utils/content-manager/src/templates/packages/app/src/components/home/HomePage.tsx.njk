@@ -1,0 +1,14 @@
+import React from 'react';
+
+export const homePage = (
+  /* TODO: Compose a Home Page here */
+  
+  return (
+    // Plugins integrations
+    {%- for plugin in spec.plugins -%}
+    {%- if plugin.app.src.components.home.homePageTsx.homePage %}
+    {{ plugin.app.src.components.home.homePageTsx.homePage | safe | indent(4) }}
+    {%- endif -%}
+    {%- endfor %}
+  );
+);

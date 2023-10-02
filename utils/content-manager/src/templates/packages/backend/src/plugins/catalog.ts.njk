@@ -3,6 +3,13 @@ import { ScaffolderEntitiesProcessor } from '@backstage/plugin-scaffolder-backen
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 
+// Plugins integrations
+{%- for plugin in spec.plugins -%}
+{%- if plugin.backend.src.plugins.catalogTs.import %}
+{{ plugin.backend.src.plugins.catalogTs.import | safe }}
+{%- endif -%}
+{%- endfor %}
+
 export default async function createPlugin(
   env: PluginEnvironment,
 ): Promise<Router> {

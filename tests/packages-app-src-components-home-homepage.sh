@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-node utils/content-manager/src/index.ts \
+node utils/content-manager/src/index.js \
   --stdout true \
-  --template templates/packages/app/src/components/home/HomePage.tsx.njk \
-  --input values/plugins.yaml
+  --template utils/content-manager/src/templates/packages/app/src/components/home/HomePage.tsx.njk \
+  --input utils/content-manager/plugins.yaml

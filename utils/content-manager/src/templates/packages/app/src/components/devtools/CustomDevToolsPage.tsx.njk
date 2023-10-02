@@ -1,0 +1,42 @@
+import {
+  ConfigContent,
+  ExternalDependenciesContent,
+  InfoContent,
+} from '@backstage/plugin-devtools';
+import { DevToolsLayout } from '@backstage/plugin-devtools';
+import React from 'react';
+
+// Plugins integrations
+{%- for plugin in spec.plugins -%}
+{%- if plugin.app.src.components.devtools.customDevToolsPageTsx.import %}
+{{ plugin.app.src.components.devtools.customDevToolsPageTsx.import | safe }}
+{%- endif -%}
+{%- endfor %}
+
+export const DevToolsPage = () => {
+  return (
+    <DevToolsLayout>
+      <DevToolsLayout.Route path="info" title="Info">
+        <InfoContent />
+      </DevToolsLayout.Route>
+      <DevToolsLayout.Route path="config" title="Config">
+        <ConfigContent />
+      </DevToolsLayout.Route>
+      <DevToolsLayout.Route
+        path="external-dependencies"
+        title="External Dependencies"
+      >
+        <ExternalDependenciesContent />
+      </DevToolsLayout.Route>
+
+      // Plugins integrations
+      {%- for plugin in spec.plugins -%}
+      {%- if plugin.app.src.components.devtools.customDevToolsPageTsx.devToolsLayout %}
+      {{ plugin.app.src.components.devtools.customDevToolsPageTsx.devToolsLayout | safe | indent(6) }}
+      {%- endif -%}
+      {%- endfor %}
+    </DevToolsLayout>
+  );
+};
+
+export const customDevToolsPage = <DevToolsPage />;

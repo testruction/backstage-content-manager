@@ -108,7 +108,6 @@ spec:
                 # homePage: |
                 #   <Page themeId="home">
                 #     <Header title="NewAnnouncementBanner" />
-
                 #     <Content>
                 #       <Grid container>
                 #         <Grid item md={12}>

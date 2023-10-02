@@ -109,14 +109,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     </Sidebar>
     {children}
     
-    // Plugin 
-    {{#each spec.plugins}}
-    {{{app.src.components.root.rootTsx.sidebarSettings}}}
-    {{/each}}
     // Plugins integrations
     {%- for plugin in spec.plugins -%}
-    {%- if plugin.app.src.components.root.rootTsx.sidebarSettings %}
-    {{ plugin.app.src.components.root.rootTsx.sidebarSettings | safe | indent(4)}}
+    {%- if plugin.app.src.components.root.rootTsx.sidebarPage %}
+    {{ plugin.app.src.components.root.rootTsx.sidebarPage | safe | indent(4)}}
     {%- endif -%}
     {%- endfor %}
   </SidebarPage>
