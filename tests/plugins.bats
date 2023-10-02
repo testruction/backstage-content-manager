@@ -45,6 +45,25 @@ setup() {
     assert_output --partial 'announcements'
 }
 
+@test "Rendering 'packages/app/src/components/home/HomePage.tsx'" {
+    run tests/packages-app-src-components-home-homepage.sh
+    assert_output --partial 'AnnouncementsCard'
+}
+
+@test "Rendering 'packages/app/src/components/root/Root.tsx'" {
+    run tests/packages-app-src-components-root-root.sh
+    assert_output --partial 'devtools'
+    assert_output --partial 'qeta'
+    assert_output --partial 'entity-validation'
+}
+
+
+@test "Rendering 'packages/app/src/components/devtools/CustomDevToolsPage.tsx'" {
+    run tests/packages-app-src-components-devtools-customdevtoolspage.sh
+    assert_output --partial 'devtools'
+}
+
+
 @test "Rendering 'packages/app/src/App.tsx'" {
     run tests/packages-app-src-app.sh
     assert_output --partial 'announcements'
@@ -53,13 +72,4 @@ setup() {
     assert_output --partial 'catalog-unprocessed-entities'
 }
 
-@test "Rendering 'packages/app/src/components/Root/Root.tsx'" {
-    run tests/packages-app-src-components-root-root.sh
-    assert_output --partial 'devtools'
-}
-
-@test "Rendering 'packages/app/src/components/devtools/CustomDevToolsPage.tsx'" {
-    run tests/packages-app-src-components-devtools-customdevtoolspage.sh
-    assert_output --partial 'devtools'
-}
 

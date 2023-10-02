@@ -310,12 +310,12 @@ const userPage = (
         </Grid>
         <Grid item xs={12} md={6}>
           <EntityOwnershipCard variant="gridItem" />
-
+        </Grid>
+        
         // Plugin integrations
         {{#each spec.plugins}}
         {{{app.src.components.catalog.entityPageTsx.userPage}}}
         {{/each}}
-        </Grid>
       </Grid>
     </EntityLayout.Route>
   </EntityLayout>
@@ -334,12 +334,12 @@ const groupPage = (
         </Grid>
         <Grid item xs={12}>
           <EntityMembersListCard />
+        </Grid>
         
         // Plugin integrations
         {{#each spec.plugins}}
         {{{app.src.components.catalog.entityPageTsx.groupPage}}}
         {{/each}}
-        </Grid>
       </Grid>
     </EntityLayout.Route>
   </EntityLayout>

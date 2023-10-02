@@ -4,6 +4,20 @@ metadata:
   name: testruction.io
 spec:
   plugins:
+    - name: Home
+      doc: https://github.com/backstage/backstage/tree/master/plugins/home/README.md
+      app:
+        package: "@backstage/plugin-home"
+        src:
+          appTsx:
+            import: |-
+              import { HomepageCompositionRoot } from '@backstage/plugin-home';
+              import { homePage } from './components/home/HomePage';
+            flatRoutes: |-
+              <Route path="/" element={<HomepageCompositionRoot />}>
+                {homePage}
+              </Route>;
+
     - name: Announcements
       doc: https://github.com/K-Phoen/backstage-plugin-announcements/blob/main/docs/setup.md
       backend:
@@ -95,6 +109,20 @@ spec:
                   },
                 searchResult: >-
                   <AdrSearchResultListItem icon={<DocsIcon />} />
+            home:
+              homePageTsx:
+                homePage: |
+                  <Page themeId="home">
+                    <Header title="AnnouncementsCard" />
+
+                    <Content>
+                      <Grid container>
+                        <Grid item md={6}>
+                          <AnnouncementsCard max={3} />
+                        </Grid>
+                      </Grid>
+                    </Content>
+                  </Page>
 
     - name: Architecture Decision Records
       doc: https://github.com/backstage/backstage/tree/v1.18.3/plugins/adr-backend
@@ -419,4 +447,53 @@ spec:
                 import: import LiveHelpIcon from '@material-ui/icons/LiveHelp';
                 sidebarPage: >-
                   <SidebarItem icon={LiveHelpIcon} to="qeta" text="Q&A" />
-                
+
+    - name: Entity Validation
+      doc: https://github.com/backstage/backstage/tree/master/plugins/entity-validation/README.md
+      app:
+        package: "@backstage/plugin-entity-validation"
+        src:
+          appTsx:
+            import: import { EntityValidationPage } from '@backstage/plugin-entity-validation';
+            flatRoutes: >-
+              <Route path="/entity-validation" element={<EntityValidationPage />} />
+          components:
+            root:
+              rootTsx:
+                import: import LiveHelpIcon from '@material-ui/icons/LiveHelp';
+                globalNavSidebarGroup: >-
+                  <SidebarItem icon={BuildIcon} to="entity-validation" text="Validator" />
+
+    - name: GitHub Pull Requests Board
+      doc: https://github.com/backstage/backstage/tree/master/plugins/github-pull-requests-board/README.md
+      app:
+        package: "@backstage/plugin-github-pull-requests-board"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: >-
+                  import { EntityTeamPullRequestsCard } from '@backstage/plugin-github-pull-requests-board';
+                groupPage: |
+                  <Grid item xs={12}>
+                    <EntityTeamPullRequestsCard />
+                  </Grid>
+
+    - name: GitHub Pull Requests
+      doc: https://roadie.io/backstage/plugins/github-pull-requests
+      app:
+        package: "@roadiehq/backstage-plugin-github-pull-requests"
+        src:
+          components:
+            catalog:
+              entityPageTsx:
+                import: >-
+                  import { EntityGithubPullRequestsContent } from '@roadiehq/backstage-plugin-github-pull-requests';
+                serviceEntityPage: |-
+                  <EntityLayout.Route path="/pull-requests" title="Pull Requests">
+                    <EntityGithubPullRequestsContent />
+                  </EntityLayout.Route>
+                overviewContent: |-
+                  <Grid item md={6}>
+                    <EntityGithubPullRequestsOverviewCard />
+                  </Grid>
