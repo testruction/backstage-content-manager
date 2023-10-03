@@ -94,12 +94,10 @@ globTransform = (args) => {
 
 const args = yargs
   .usage("Usage: -t <template> -i <input> -o <output>")
-  // .option("t", { alias: "template", describe: "The path to the handlebars template", type: "string", demandOption: false })
   .option("t", { alias: "template", describe: "The path to the nunjucks template", type: "string", demandOption: false })
   .option("i", { alias: "input", describe: "The path of the input yml file, can be '**/*.yml'", type: "string", demandOption: false })
   .option("o", { alias: "output", describe: "The path for the transformed output, can be folder", type: "string", demandOption: false, default: "." })
   .option("e", { alias: "extension", describe: "The output extension", type: "string", demandOption: false, default: ".out" })
-  // .option("s", { alias: "stdout", describe: "Output transforms to stdout", type: "bool", demandOption: false, default: false })
   .option("s", { alias: "stdout", describe: "Output transforms to stdout", type: "bool", demandOption: false, default: false })
   .help()
   .argv;
